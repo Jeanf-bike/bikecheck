@@ -26,10 +26,10 @@ class MainActivity : AppCompatActivity() {
     }
 
     private val bikes = listOf(
-        Bike("Ultimate",  "Race fiets",        "",         R.drawable.bike_bg_red,    0),
-        Bike("Atalaya",   "Gravel fiets",       "",         R.drawable.bike_bg_green,  0),
-        Bike("Neuron",    "Mountain bike",      "Fully",    R.drawable.bike_bg_blue,   0),
-        Bike("Exceed",    "Mountain bike",      "Hardtail", R.drawable.bike_bg_purple, 0)
+        Bike("Ultimate", "Race fiets",   "",         R.drawable.bike_bg_ultimate),
+        Bike("Atalaya",  "Gravel fiets", "",         R.drawable.bike_bg_atalaya),
+        Bike("Neuron",   "Mountain bike","Fully",    R.drawable.bike_bg_neuron),
+        Bike("Exceed",   "Mountain bike","Hardtail", R.drawable.bike_bg_exceed)
     )
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -69,8 +69,8 @@ class MainActivity : AppCompatActivity() {
             .lastLocation.addOnSuccessListener { location ->
                 if (location != null) {
                     CoroutineScope(Dispatchers.Main).launch {
-                        binding.tvWeather.text =
-                            WeatherHelper.fetchWeather(location.latitude, location.longitude)
+                        val weather = WeatherHelper.fetchWeather(location.latitude, location.longitude)
+                        binding.tvWeather.text = weather.displayText
                     }
                 } else {
                     binding.tvWeather.text = "Locatie niet beschikbaar"
@@ -85,7 +85,7 @@ class MainActivity : AppCompatActivity() {
             && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
             fetchWeather()
         } else {
-            binding.tvWeather.text = "Locatietoestemming geweigerd — geen weerinfo"
+            binding.tvWeather.text = "Locatietoestemming geweigerd"
         }
     }
 

@@ -27,15 +27,40 @@
             android:padding="12dp"
             android:buttonTint="@color/colorPrimary" />
 
-        <TextView
-            android:id="@+id/tvDescription"
+        <!-- Tekst + optionele weerbadge -->
+        <LinearLayout
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:textSize="15sp"
-            android:textColor="@color/textPrimary"
-            android:lineSpacingMultiplier="1.2"
-            tools:text="Voorrem werkt goed" />
+            android:orientation="vertical"
+            android:paddingVertical="10dp">
+
+            <TextView
+                android:id="@+id/tvDescription"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="15sp"
+                android:textColor="@color/textPrimary"
+                android:lineSpacingMultiplier="1.2"
+                tools:text="Raceschoenen" />
+
+            <!-- Weerbadge: alleen zichtbaar voor conditionele items -->
+            <TextView
+                android:id="@+id/tvWeatherTag"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="3dp"
+                android:paddingHorizontal="8dp"
+                android:paddingVertical="2dp"
+                android:textSize="11sp"
+                android:textStyle="bold"
+                android:textColor="@color/tagText"
+                android:background="@drawable/bg_weather_tag"
+                android:visibility="gone"
+                tools:text="☀️ UV"
+                tools:visibility="visible" />
+
+        </LinearLayout>
 
     </LinearLayout>
 

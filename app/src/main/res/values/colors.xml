@@ -1,26 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <!-- Primary green (fiets/eco thema) -->
-    <color name="colorPrimary">#1B5E20</color>
-    <color name="colorPrimaryDark">#003300</color>
+    <!-- Primary (neutraal donkergroen) -->
+    <color name="colorPrimary">#2E7D32</color>
+    <color name="colorPrimaryDark">#1B5E20</color>
     <color name="colorPrimaryLight">#A5D6A7</color>
 
     <!-- Accent -->
     <color name="colorAccent">#FF6D00</color>
 
     <!-- Backgrounds -->
-    <color name="colorBackground">#F1F5F1</color>
+    <color name="colorBackground">#F2F2F2</color>
     <color name="cardBackground">#FFFFFF</color>
 
     <!-- Text -->
     <color name="textPrimary">#1A1A1A</color>
-    <color name="textSecondary">#757575</color>
-
-    <!-- Progress states -->
-    <color name="progressComplete">#00C853</color>
-    <color name="progressPartial">#FFD600</color>
-    <color name="progressLow">#FFFFFF</color>
+    <color name="textSecondary">#6E6E6E</color>
 
     <!-- Divider -->
-    <color name="dividerColor">#C8E6C9</color>
+    <color name="dividerColor">#E0E0E0</color>
+
+    <!-- Weerbadge (conditionele checklist-items) -->
+    <color name="tagBackground">#FFF3E0</color>
+    <color name="tagText">#E65100</color>
+
+    <!-- Subtype-badge op fietskaart (Fully / Hardtail) -->
+    <color name="tagSubtypeBackground">#E8F5E9</color>
 </resources>

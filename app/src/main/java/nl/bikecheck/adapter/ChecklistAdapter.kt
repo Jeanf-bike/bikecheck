@@ -2,6 +2,7 @@ package nl.bikecheck.adapter
 
 import android.graphics.Paint
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import nl.bikecheck.databinding.ItemChecklistBinding
@@ -27,6 +28,14 @@ class ChecklistAdapter(
             tvDescription.text = item.description
             applyStrikeThrough(item.isChecked)
 
+            // Weerbadge (☀️ UV of 🥶 Koud)
+            if (item.weatherTag.isNotEmpty()) {
+                tvWeatherTag.text = item.weatherTag
+                tvWeatherTag.visibility = View.VISIBLE
+            } else {
+                tvWeatherTag.visibility = View.GONE
+            }
+
             checkBox.setOnCheckedChangeListener { _, isChecked ->
                 item.isChecked = isChecked
                 applyStrikeThrough(isChecked)
@@ -41,10 +50,27 @@ class ChecklistAdapter(
         } else {
             tvDescription.paintFlags and Paint.STRIKE_THRU_TEXT_FLAG.inv()
         }
-        tvDescription.alpha = if (strike) 0.5f else 1.0f
+        tvDescription.alpha = if (strike) 0.45f else 1.0f
     }
 
     override fun getItemCount(): Int = items.size
 
     fun getItems(): MutableList<ChecklistItem> = items
+
+    /**
+     * Vervangt alle weather_* items door de nieuwe set op basis van actueel weer.
+     * Onthoudt de checked-status van items die blijven.
+     */
+    fun updateConditionalItems(newConditional: List<ChecklistItem>) {
+        val oldConditional = items.filter { it.id.startsWith("weather_") }
+        items.removeAll { it.id.startsWith("weather_") }
+
+        val merged = newConditional.map { new ->
+            val prev = oldConditional.find { it.id == new.id }
+            if (prev != null) new.copy(isChecked = prev.isChecked) else new
+        }
+
+        items.addAll(merged)
+        notifyDataSetChanged()
+    }
 }

@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Canyon Atalaya — titanium/zilver gravel fiets, lichte achtergrond -->
+<shape xmlns:android="http://schemas.android.com/apk/res/android">
+    <gradient
+        android:startColor="#D8D8D8"
+        android:centerColor="#EBEBEB"
+        android:endColor="#F5F5F5"
+        android:angle="145"
+        android:type="linear" />
+</shape>

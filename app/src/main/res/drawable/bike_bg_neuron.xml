@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Canyon Neuron — crème/wit MTB fully, warme lichte achtergrond -->
+<shape xmlns:android="http://schemas.android.com/apk/res/android">
+    <gradient
+        android:startColor="#EDE8DE"
+        android:centerColor="#F5F1E8"
+        android:endColor="#FAF8F2"
+        android:angle="145"
+        android:type="linear" />
+</shape>

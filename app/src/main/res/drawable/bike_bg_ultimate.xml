@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Canyon Ultimate — donker carbon race-fiets, zwart/antraciet achtergrond -->
+<shape xmlns:android="http://schemas.android.com/apk/res/android">
+    <gradient
+        android:startColor="#0D0D0D"
+        android:centerColor="#1A1A1A"
+        android:endColor="#2C2020"
+        android:angle="145"
+        android:type="linear" />
+</shape>

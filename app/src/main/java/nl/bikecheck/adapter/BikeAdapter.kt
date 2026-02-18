@@ -1,6 +1,7 @@
 package nl.bikecheck.adapter
 
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import nl.bikecheck.databinding.ItemBikeCardBinding
@@ -23,13 +24,17 @@ class BikeAdapter(
         holder.binding.apply {
             tvBikeName.text = bike.name
             tvBikeSubtitle.text = bike.subtitle
+
             if (bike.subtype.isNotEmpty()) {
                 tvBikeSubtype.text = bike.subtype
-                tvBikeSubtype.visibility = android.view.View.VISIBLE
+                tvBikeSubtype.visibility = View.VISIBLE
             } else {
-                tvBikeSubtype.visibility = android.view.View.GONE
+                tvBikeSubtype.visibility = View.GONE
             }
-            ivBikePlaceholder.setBackgroundResource(bike.imageRes)
+
+            // Echte foto als resource beschikbaar is, anders gradient-placeholder
+            ivBikePlaceholder.setImageResource(bike.imageRes)
+
             root.setOnClickListener { onClick(bike) }
         }
     }
