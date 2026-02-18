@@ -1,0 +1,533 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>BikeCheck</title>
+<style>
+:root {
+    --groen: #2E7D32;
+    --lichtgroen: #E8F5E9;
+    --bg: #F0F0F0;
+    --wit: #FFFFFF;
+    --tekst: #1A1A1A;
+    --subtekst: #6E6E6E;
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html, body {
+    height: 100%;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    background: var(--bg);
+    color: var(--tekst);
+    -webkit-tap-highlight-color: transparent;
+}
+.verborgen { display: none !important; }
+
+/* App-balk */
+.balk {
+    background: var(--groen);
+    color: #fff;
+    padding: 0 16px;
+    display: flex;
+    align-items: center;
+    min-height: 56px;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    box-shadow: 0 2px 6px rgba(0,0,0,.2);
+    flex-wrap: wrap;
+    padding-bottom: 0;
+}
+.balk-titel {
+    font-size: 18px;
+    font-weight: 700;
+    flex: 1;
+    line-height: 56px;
+}
+.icoon-knop {
+    background: none;
+    border: none;
+    color: #fff;
+    cursor: pointer;
+    padding: 8px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    line-height: 56px;
+    font-size: 22px;
+}
+.icoon-knop:active { background: rgba(255,255,255,.2); }
+
+/* Voortgang */
+.voortgang-wrap { width: 100%; padding: 0 0 12px; }
+.voortgang-balk {
+    height: 5px;
+    background: rgba(255,255,255,.3);
+    border-radius: 3px;
+    overflow: hidden;
+}
+.voortgang-fill {
+    height: 100%;
+    background: #fff;
+    border-radius: 3px;
+    transition: width .3s ease;
+    width: 0%;
+}
+.voortgang-labels {
+    display: flex;
+    justify-content: space-between;
+    font-size: 12px;
+    color: rgba(255,255,255,.85);
+    margin-top: 4px;
+}
+
+/* Inhoud */
+.inhoud {
+    padding: 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    min-height: calc(100vh - 56px);
+}
+
+/* Weerkaart */
+.weerkaart {
+    background: var(--wit);
+    border-radius: 8px;
+    padding: 12px 16px;
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    box-shadow: 0 1px 4px rgba(0,0,0,.1);
+}
+.weer-emoji { font-size: 26px; flex-shrink: 0; }
+.weer-tekst { font-size: 14px; line-height: 1.6; white-space: pre-line; }
+
+/* Fietskaarten */
+.fiets-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+}
+.fiets-kaart {
+    background: var(--wit);
+    border-radius: 14px;
+    overflow: hidden;
+    box-shadow: 0 2px 8px rgba(0,0,0,.1);
+    cursor: pointer;
+    transition: transform .15s;
+    user-select: none;
+}
+.fiets-kaart:active { transform: scale(.96); }
+.fiets-foto {
+    height: 140px;
+    background-size: cover;
+    background-position: center;
+}
+.fiets-info { padding: 10px 12px 12px; }
+.fiets-naam { font-size: 15px; font-weight: 700; }
+.fiets-rij { display: flex; align-items: center; gap: 6px; margin-top: 3px; }
+.fiets-sub { font-size: 12px; color: var(--subtekst); flex: 1; }
+.fiets-type {
+    font-size: 10px;
+    font-weight: 700;
+    color: var(--groen);
+    background: var(--lichtgroen);
+    padding: 2px 7px;
+    border-radius: 20px;
+}
+
+/* Checklijst */
+.checklijst { list-style: none; display: flex; flex-direction: column; gap: 6px; padding-bottom: 32px; }
+.check-item {
+    background: var(--wit);
+    border-radius: 8px;
+    box-shadow: 0 1px 4px rgba(0,0,0,.08);
+}
+.check-item label {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    min-height: 52px;
+    padding-right: 16px;
+}
+.check-item input[type=checkbox] {
+    appearance: none;
+    -webkit-appearance: none;
+    width: 44px;
+    height: 52px;
+    flex-shrink: 0;
+    position: relative;
+    cursor: pointer;
+}
+.check-item input[type=checkbox]::after {
+    content: '';
+    position: absolute;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    width: 22px; height: 22px;
+    border: 2px solid #C8C8C8;
+    border-radius: 5px;
+    background: #fff;
+    transition: all .15s;
+}
+.check-item input[type=checkbox]:checked::after {
+    background: var(--groen);
+    border-color: var(--groen);
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='3.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='20 6 9 17 4 12'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: center;
+}
+.item-inhoud { flex: 1; display: flex; flex-direction: column; gap: 4px; padding: 10px 0; }
+.item-tekst { font-size: 15px; line-height: 1.3; transition: opacity .15s; }
+.item-badge {
+    display: inline-block;
+    font-size: 11px;
+    font-weight: 700;
+    padding: 2px 8px;
+    border-radius: 20px;
+    align-self: flex-start;
+}
+.badge-uv   { background: #FFF3E0; color: #E65100; }
+.badge-koud { background: #E3F2FD; color: #1565C0; }
+.check-item.afgevinkt .item-tekst { text-decoration: line-through; opacity: .35; }
+
+/* Dialoog */
+.overlay {
+    position: fixed; inset: 0;
+    background: rgba(0,0,0,.45);
+    display: flex; align-items: center; justify-content: center;
+    z-index: 100; padding: 24px;
+}
+.dialoog {
+    background: var(--wit);
+    border-radius: 14px;
+    padding: 24px;
+    max-width: 320px;
+    width: 100%;
+    box-shadow: 0 8px 32px rgba(0,0,0,.25);
+}
+.dialoog h2 { font-size: 17px; margin-bottom: 8px; }
+.dialoog p  { font-size: 14px; color: var(--subtekst); margin-bottom: 20px; line-height: 1.5; }
+.dialoog-knoppen { display: flex; gap: 10px; justify-content: flex-end; }
+.knop {
+    padding: 10px 18px;
+    border: none;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+}
+.knop-annuleer { background: #EEE; color: var(--tekst); }
+.knop-reset    { background: var(--groen); color: #fff; }
+</style>
+</head>
+<body>
+
+<!-- ═══ HOOFDSCHERM ═══ -->
+<div id="hoofd-scherm">
+    <header class="balk">
+        <span class="balk-titel">Mijn Fietsen</span>
+    </header>
+    <div class="inhoud">
+        <div class="weerkaart">
+            <span class="weer-emoji">🌤️</span>
+            <span class="weer-tekst" id="weer-hoofd">Weer ophalen…</span>
+        </div>
+        <div class="fiets-grid" id="fiets-grid"></div>
+    </div>
+</div>
+
+<!-- ═══ CHECKLISTSCHERM ═══ -->
+<div id="check-scherm" class="verborgen">
+    <header class="balk">
+        <button class="icoon-knop" id="terug-knop">&#8592;</button>
+        <span class="balk-titel" id="check-titel">Ultimate</span>
+        <button class="icoon-knop" id="reset-knop" title="Reset">&#8635;</button>
+        <div class="voortgang-wrap">
+            <div class="voortgang-balk">
+                <div class="voortgang-fill" id="voortgang-fill"></div>
+            </div>
+            <div class="voortgang-labels">
+                <span id="voortgang-teller">0 / 0</span>
+                <span id="voortgang-pct">0%</span>
+            </div>
+        </div>
+    </header>
+    <div class="inhoud">
+        <div class="weerkaart">
+            <span class="weer-emoji">🌤️</span>
+            <span class="weer-tekst" id="weer-check">Weer ophalen…</span>
+        </div>
+        <ul class="checklijst" id="check-items"></ul>
+    </div>
+</div>
+
+<!-- ═══ RESET-DIALOOG ═══ -->
+<div class="overlay verborgen" id="reset-overlay">
+    <div class="dialoog">
+        <h2>Checklist resetten</h2>
+        <p>Alle vinkjes voor deze fiets verwijderen?</p>
+        <div class="dialoog-knoppen">
+            <button class="knop knop-annuleer" id="annuleer-reset">Annuleren</button>
+            <button class="knop knop-reset"    id="bevestig-reset">Reset</button>
+        </div>
+    </div>
+</div>
+
+<script>
+'use strict';
+
+// ── Configuratie ──────────────────────────────────────────────────────────────
+const API_SLEUTEL = 'b2993d09a467a0172653bfecc4851b74';
+
+// ── Fietsen ───────────────────────────────────────────────────────────────────
+const FIETSEN = [
+    { naam: 'Ultimate', sub: 'Race fiets',   type: '',        kleur: 'linear-gradient(145deg,#0D0D0D,#2C2020)' },
+    { naam: 'Atalaya',  sub: 'Gravel fiets', type: '',        kleur: 'linear-gradient(145deg,#C0C0C0,#F0F0F0)' },
+    { naam: 'Neuron',   sub: 'Mountain bike',type: 'Fully',   kleur: 'linear-gradient(145deg,#E0D8C8,#F8F4EE)' },
+    { naam: 'Exceed',   sub: 'Mountain bike',type: 'Hardtail',kleur: 'linear-gradient(145deg,#0A0F1A,#1C2B3A)' },
+];
+
+// ── Checklijsten ──────────────────────────────────────────────────────────────
+const LIJSTEN = {
+    Ultimate: [
+        { id:'u1',  tekst:'Raceschoenen' },
+        { id:'u2',  tekst:'Twee bidons' },
+        { id:'u3',  tekst:'Reparatietas en bandje' },
+        { id:'u4',  tekst:'Wahoo groot' },
+        { id:'u5',  tekst:'Handschoenen' },
+        { id:'u6',  tekst:'Bril' },
+        { id:'u7',  tekst:'Muts' },
+        { id:'u8',  tekst:'Overschoenen' },
+        { id:'u9',  tekst:'Eten' },
+        { id:'u10', tekst:'Verlichting' },
+    ],
+    Atalaya: [
+        { id:'a1',  tekst:'Klikschoen of Flatschoen' },
+        { id:'a2',  tekst:'Twee bidons' },
+        { id:'a3',  tekst:'Reparatiebidon' },
+        { id:'a4',  tekst:'Batterij' },
+        { id:'a5',  tekst:'Wahoo groot' },
+        { id:'a6',  tekst:'Handschoenen' },
+        { id:'a7',  tekst:'Bril' },
+        { id:'a8',  tekst:'Muts' },
+        { id:'a9',  tekst:'Overschoenen' },
+        { id:'a10', tekst:'Eten' },
+        { id:'a11', tekst:'Verlichting' },
+    ],
+    Neuron: [
+        { id:'n1',  tekst:'Klikschoen of Flatschoen' },
+        { id:'n2',  tekst:'Één bidon of drinkzak' },
+        { id:'n3',  tekst:'Reparatietas' },
+        { id:'n4',  tekst:'Batterij' },
+        { id:'n5',  tekst:'Wahoo groot' },
+        { id:'n6',  tekst:'Handschoenen' },
+        { id:'n7',  tekst:'Bril' },
+        { id:'n8',  tekst:'Muts' },
+        { id:'n9',  tekst:'Overschoenen' },
+        { id:'n10', tekst:'Eten' },
+        { id:'n11', tekst:'Verlichting' },
+    ],
+    Exceed: [
+        { id:'e1',  tekst:'Klikschoenen' },
+        { id:'e2',  tekst:'Twee bidons' },
+        { id:'e3',  tekst:'Reparatietas' },
+        { id:'e4',  tekst:'Wahoo klein' },
+        { id:'e5',  tekst:'Handschoenen' },
+        { id:'e6',  tekst:'Bril' },
+        { id:'e7',  tekst:'Muts' },
+        { id:'e8',  tekst:'Overschoenen' },
+        { id:'e9',  tekst:'Eten' },
+        { id:'e10', tekst:'Verlichting' },
+    ],
+};
+
+// ── Weer-items op basis van temperatuur en UV ─────────────────────────────────
+function weerItems(temp, uvi) {
+    const items = [];
+    if (uvi >= 3) {
+        items.push({ id:'w_zonnebrand', tekst:'Zonnebrand',         badge:'☀️ UV',   cls:'badge-uv' });
+        items.push({ id:'w_lipbalsem',  tekst:'Lipbalsem',           badge:'☀️ UV',   cls:'badge-uv' });
+    }
+    if (temp < 5) {
+        items.push({ id:'w_muts',       tekst:'Muts',                badge:'🥶 Koud', cls:'badge-koud' });
+        items.push({ id:'w_handsch',    tekst:'Warme handschoenen',  badge:'🥶 Koud', cls:'badge-koud' });
+        items.push({ id:'w_overschoen', tekst:'Overschoenen',        badge:'🥶 Koud', cls:'badge-koud' });
+    }
+    return items;
+}
+
+// ── State ─────────────────────────────────────────────────────────────────────
+let huidigeFiets = null;
+let weerTemp = 15;
+let weerUvi  = 0;
+let weerTekst = 'Weer ophalen…';
+
+// ── Opslag ────────────────────────────────────────────────────────────────────
+function slaOp(naam, items) {
+    const s = {};
+    items.forEach(it => s[it.id] = it.aangevinkt);
+    localStorage.setItem('bc_' + naam, JSON.stringify(s));
+}
+function laadOp(naam) {
+    try { return JSON.parse(localStorage.getItem('bc_' + naam)) || {}; }
+    catch { return {}; }
+}
+
+// ── Navigatie ─────────────────────────────────────────────────────────────────
+function toonHoofd() {
+    document.getElementById('check-scherm').classList.add('verborgen');
+    document.getElementById('hoofd-scherm').classList.remove('verborgen');
+    huidigeFiets = null;
+}
+function toonChecklist(fiets) {
+    huidigeFiets = fiets;
+    document.getElementById('hoofd-scherm').classList.add('verborgen');
+    document.getElementById('check-scherm').classList.remove('verborgen');
+    document.getElementById('check-titel').textContent = fiets.naam;
+    document.getElementById('weer-check').textContent = weerTekst;
+    tekenChecklist();
+}
+
+// ── Fietskaarten tekenen ──────────────────────────────────────────────────────
+function tekenFietsen() {
+    const grid = document.getElementById('fiets-grid');
+    grid.innerHTML = FIETSEN.map(f => `
+        <div class="fiets-kaart" data-naam="${f.naam}">
+            <div class="fiets-foto" style="background:url('images/bike_${f.naam.toLowerCase()}.jpg') center/cover, ${f.kleur}"></div>
+            <div class="fiets-info">
+                <div class="fiets-naam">${f.naam}</div>
+                <div class="fiets-rij">
+                    <span class="fiets-sub">${f.sub}</span>
+                    ${f.type ? `<span class="fiets-type">${f.type}</span>` : ''}
+                </div>
+            </div>
+        </div>
+    `).join('');
+    grid.querySelectorAll('.fiets-kaart').forEach(k => {
+        k.addEventListener('click', () => {
+            const f = FIETSEN.find(f => f.naam === k.dataset.naam);
+            if (f) toonChecklist(f);
+        });
+    });
+}
+
+// ── Checklist tekenen ─────────────────────────────────────────────────────────
+function tekenChecklist() {
+    if (!huidigeFiets) return;
+    const opgeslagen = laadOp(huidigeFiets.naam);
+    const basisItems = LIJSTEN[huidigeFiets.naam].map(it => ({
+        ...it, aangevinkt: opgeslagen[it.id] ?? false, badge: '', cls: ''
+    }));
+    const wItems = weerItems(weerTemp, weerUvi).map(it => ({
+        ...it, aangevinkt: opgeslagen[it.id] ?? false
+    }));
+    const alleItems = [...basisItems, ...wItems];
+
+    const lijst = document.getElementById('check-items');
+    lijst.innerHTML = alleItems.map(it => `
+        <li class="check-item${it.aangevinkt ? ' afgevinkt' : ''}" id="li-${it.id}">
+            <label>
+                <input type="checkbox" data-id="${it.id}" ${it.aangevinkt ? 'checked' : ''}>
+                <span class="item-inhoud">
+                    <span class="item-tekst">${it.tekst}</span>
+                    ${it.badge ? `<span class="item-badge ${it.cls}">${it.badge}</span>` : ''}
+                </span>
+            </label>
+        </li>
+    `).join('');
+
+    lijst.querySelectorAll('input[type=checkbox]').forEach(cb => {
+        cb.addEventListener('change', () => {
+            const li   = document.getElementById('li-' + cb.dataset.id);
+            const item = alleItems.find(it => it.id === cb.dataset.id);
+            li.classList.toggle('afgevinkt', cb.checked);
+            if (item) item.aangevinkt = cb.checked;
+            slaOp(huidigeFiets.naam, alleItems);
+            bijwerkVoortgang(alleItems);
+        });
+    });
+    bijwerkVoortgang(alleItems);
+}
+
+function bijwerkVoortgang(items) {
+    const totaal   = items.length;
+    const afgevinkt = items.filter(it => it.aangevinkt).length;
+    const pct = totaal > 0 ? Math.round(afgevinkt / totaal * 100) : 0;
+    document.getElementById('voortgang-fill').style.width  = pct + '%';
+    document.getElementById('voortgang-teller').textContent = `${afgevinkt} / ${totaal}`;
+    document.getElementById('voortgang-pct').textContent    = pct + '%';
+}
+
+// ── Weer ophalen ──────────────────────────────────────────────────────────────
+async function haalWeerOp(lat, lon) {
+    try {
+        const [fRes, uviRes] = await Promise.allSettled([
+            fetch(`https://api.openweathermap.org/data/2.5/forecast?lat=${lat}&lon=${lon}&units=metric&appid=${API_SLEUTEL}`).then(r => r.json()),
+            fetch(`https://api.openweathermap.org/data/2.5/uvi?lat=${lat}&lon=${lon}&appid=${API_SLEUTEL}`).then(r => r.json()),
+        ]);
+        if (fRes.status !== 'fulfilled') throw new Error();
+        const f       = fRes.value;
+        const nu      = f.list[0];
+        const over4   = f.list[1];
+        weerTemp      = nu.main.temp;
+        weerUvi       = uviRes.status === 'fulfilled' ? (uviRes.value?.value ?? 0) : 0;
+        const temp    = Math.round(weerTemp);
+        const temp4   = Math.round(over4.main.temp);
+        const regen   = Math.round(nu.pop * 100);
+        const wid     = nu.weather[0].id;
+        const emoji   = wid>=200&&wid<300?'⛈️':wid>=300&&wid<600?'🌧️':wid>=600&&wid<700?'🌨️':wid>=700&&wid<800?'🌫️':wid===800?'☀️':'⛅';
+        weerTekst     = `${emoji}  Nu: ${temp}°C     Over 4 uur: ${temp4}°C`;
+        if (regen > 30) weerTekst += `\n⚠️  ${regen}% kans op regen`;
+        if (weerUvi >= 3) {
+            const niveau = weerUvi>=8?'zeer hoog':weerUvi>=6?'hoog':'matig';
+            weerTekst += `\n🔆  UV-index ${Math.round(weerUvi)} (${niveau})`;
+        }
+    } catch {
+        weerTekst = 'Kon het weer niet ophalen';
+    }
+    document.getElementById('weer-hoofd').textContent = weerTekst;
+    document.getElementById('weer-check').textContent = weerTekst;
+    if (huidigeFiets) tekenChecklist();
+}
+
+function startWeer() {
+    if (!navigator.geolocation) {
+        document.getElementById('weer-hoofd').textContent = 'Locatie niet beschikbaar';
+        return;
+    }
+    navigator.geolocation.getCurrentPosition(
+        p => haalWeerOp(p.coords.latitude, p.coords.longitude),
+        () => { document.getElementById('weer-hoofd').textContent = 'Locatie geweigerd'; }
+    );
+}
+
+// ── Knoppen ───────────────────────────────────────────────────────────────────
+document.getElementById('terug-knop').addEventListener('click', toonHoofd);
+document.getElementById('reset-knop').addEventListener('click', () => {
+    document.getElementById('reset-overlay').classList.remove('verborgen');
+});
+document.getElementById('annuleer-reset').addEventListener('click', () => {
+    document.getElementById('reset-overlay').classList.add('verborgen');
+});
+document.getElementById('bevestig-reset').addEventListener('click', () => {
+    document.getElementById('reset-overlay').classList.add('verborgen');
+    if (huidigeFiets) {
+        localStorage.removeItem('bc_' + huidigeFiets.naam);
+        tekenChecklist();
+    }
+});
+document.getElementById('reset-overlay').addEventListener('click', e => {
+    if (e.target.id === 'reset-overlay')
+        document.getElementById('reset-overlay').classList.add('verborgen');
+});
+
+// ── Start ─────────────────────────────────────────────────────────────────────
+tekenFietsen();
+startWeer();
+setInterval(startWeer, 30 * 60 * 1000);
+</script>
+</body>
+</html>
