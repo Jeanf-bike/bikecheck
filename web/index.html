@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <meta name="theme-color" content="#2E7D32">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <link rel="manifest" href="manifest.json">
+    <link rel="stylesheet" href="style.css">
+    <title>BikeCheck</title>
+</head>
+<body>
+
+    <!-- ═══ HOOFDSCHERM ═══ -->
+    <div id="main-screen">
+        <header class="app-bar">
+            <span class="app-bar-title">Mijn Fietsen</span>
+        </header>
+
+        <div class="screen-content">
+            <div class="weather-card" id="weather-main">
+                <span class="weather-emoji">🌤️</span>
+                <span class="weather-text" id="weather-text-main">Weer ophalen…</span>
+            </div>
+
+            <div class="bike-grid" id="bike-grid">
+                <!-- Fietskaarten worden ingeladen door app.js -->
+            </div>
+        </div>
+    </div>
+
+    <!-- ═══ CHECKLISTSCHERM ═══ -->
+    <div id="checklist-screen" class="hidden">
+        <header class="app-bar app-bar--detail">
+            <button class="icon-btn" id="back-btn" aria-label="Terug">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                    <polyline points="15 18 9 12 15 6"/>
+                </svg>
+            </button>
+            <span class="app-bar-title" id="checklist-title">Ultimate</span>
+            <button class="icon-btn" id="reset-btn" aria-label="Reset checklist" title="Alles uitvinken">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                    <polyline points="1 4 1 10 7 10"/>
+                    <path d="M3.51 15a9 9 0 1 0 .49-3.49"/>
+                </svg>
+            </button>
+
+            <div class="progress-wrap">
+                <div class="progress-track">
+                    <div class="progress-fill" id="progress-fill"></div>
+                </div>
+                <div class="progress-labels">
+                    <span id="progress-count">0 / 0</span>
+                    <span id="progress-pct">0%</span>
+                </div>
+            </div>
+        </header>
+
+        <div class="screen-content">
+            <div class="weather-card" id="weather-checklist">
+                <span class="weather-emoji">🌤️</span>
+                <span class="weather-text" id="weather-text-checklist">Weer ophalen…</span>
+            </div>
+
+            <ul class="checklist" id="checklist-items">
+                <!-- Items worden ingeladen door app.js -->
+            </ul>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
