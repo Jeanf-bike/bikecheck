@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Primary green (fiets/eco thema) -->
+    <color name="colorPrimary">#1B5E20</color>
+    <color name="colorPrimaryDark">#003300</color>
+    <color name="colorPrimaryLight">#A5D6A7</color>
+
+    <!-- Accent -->
+    <color name="colorAccent">#FF6D00</color>
+
+    <!-- Backgrounds -->
+    <color name="colorBackground">#F1F5F1</color>
+    <color name="cardBackground">#FFFFFF</color>
+
+    <!-- Text -->
+    <color name="textPrimary">#1A1A1A</color>
+    <color name="textSecondary">#757575</color>
+
+    <!-- Progress states -->
+    <color name="progressComplete">#00C853</color>
+    <color name="progressPartial">#FFD600</color>
+    <color name="progressLow">#FFFFFF</color>
+
+    <!-- Divider -->
+    <color name="dividerColor">#C8E6C9</color>
+</resources>
