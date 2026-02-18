@@ -1,154 +1,99 @@
 package nl.bikecheck
 
+import android.Manifest
+import android.content.Intent
+import android.content.pm.PackageManager
 import android.os.Bundle
-import android.view.Menu
-import android.view.MenuItem
-import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
-import androidx.recyclerview.widget.LinearLayoutManager
-import nl.bikecheck.adapter.ChecklistAdapter
+import androidx.core.app.ActivityCompat
+import androidx.recyclerview.widget.GridLayoutManager
+import com.google.android.gms.location.LocationServices
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import nl.bikecheck.adapter.BikeAdapter
 import nl.bikecheck.databinding.ActivityMainBinding
-import nl.bikecheck.model.ChecklistCategory
-import nl.bikecheck.model.ChecklistItem
-import nl.bikecheck.util.PrefsHelper
+import nl.bikecheck.model.Bike
+import nl.bikecheck.util.WeatherHelper
 
 class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
-    private lateinit var adapter: ChecklistAdapter
-    private lateinit var prefsHelper: PrefsHelper
+
+    companion object {
+        const val EXTRA_BIKE_NAME = "bike_name"
+        private const val LOCATION_PERMISSION_REQUEST = 1001
+    }
+
+    private val bikes = listOf(
+        Bike("Ultimate",  "Race fiets",        "",         R.drawable.bike_bg_red,    0),
+        Bike("Atalaya",   "Gravel fiets",       "",         R.drawable.bike_bg_green,  0),
+        Bike("Neuron",    "Mountain bike",      "Fully",    R.drawable.bike_bg_blue,   0),
+        Bike("Exceed",    "Mountain bike",      "Hardtail", R.drawable.bike_bg_purple, 0)
+    )
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
-
         setSupportActionBar(binding.toolbar)
 
-        prefsHelper = PrefsHelper(this)
-        setupRecyclerView()
-        updateProgress()
-        updateLastCheckDate()
-    }
-
-    private fun defaultCategories(): MutableList<ChecklistCategory> = mutableListOf(
-        ChecklistCategory(
-            name = "Veiligheid",
-            icon = "🔒",
-            items = mutableListOf(
-                ChecklistItem("v1", "Voorrem werkt goed"),
-                ChecklistItem("v2", "Achterrem werkt goed"),
-                ChecklistItem("v3", "Voorlicht werkt"),
-                ChecklistItem("v4", "Achterlicht werkt"),
-                ChecklistItem("v5", "Reflectoren aanwezig en schoon"),
-                ChecklistItem("v6", "Bel werkt"),
-                ChecklistItem("v7", "Stuur zit stevig vast"),
-                ChecklistItem("v8", "Zadel zit stevig vast en op hoogte")
-            )
-        ),
-        ChecklistCategory(
-            name = "Aandrijving",
-            icon = "⚙️",
-            items = mutableListOf(
-                ChecklistItem("a1", "Ketting is gesmeerd"),
-                ChecklistItem("a2", "Ketting is niet gesleten of roestig"),
-                ChecklistItem("a3", "Versnellingen schakelen soepel"),
-                ChecklistItem("a4", "Pedalen zitten goed vast")
-            )
-        ),
-        ChecklistCategory(
-            name = "Banden & Wielen",
-            icon = "⬤",
-            items = mutableListOf(
-                ChecklistItem("b1", "Voorband voldoende gespannen"),
-                ChecklistItem("b2", "Achterband voldoende gespannen"),
-                ChecklistItem("b3", "Banden zijn niet gesleten of beschadigd"),
-                ChecklistItem("b4", "Wielen draaien recht (niet scheef of wankel)")
-            )
-        ),
-        ChecklistCategory(
-            name = "Overig",
-            icon = "🔧",
-            items = mutableListOf(
-                ChecklistItem("o1", "Spatborden zitten stevig vast"),
-                ChecklistItem("o2", "Slot werkt goed"),
-                ChecklistItem("o3", "Standaard werkt (indien aanwezig)"),
-                ChecklistItem("o4", "Bagagedrager zit vast (indien aanwezig)"),
-                ChecklistItem("o5", "Fiets is schoon en vrij van roest")
-            )
-        )
-    )
-
-    private fun setupRecyclerView() {
-        val categories = prefsHelper.loadCategories()?.toMutableList() ?: defaultCategories()
-
-        adapter = ChecklistAdapter(categories) { total, checked ->
-            updateProgress(total, checked)
-            prefsHelper.saveCategories(adapter.getCategories())
-            updateLastCheckDate()
+        binding.rvBikes.layoutManager = GridLayoutManager(this, 2)
+        binding.rvBikes.adapter = BikeAdapter(bikes) { bike ->
+            startActivity(Intent(this, ChecklistActivity::class.java).apply {
+                putExtra(EXTRA_BIKE_NAME, bike.name)
+            })
         }
 
-        binding.recyclerView.layoutManager = LinearLayoutManager(this)
-        binding.recyclerView.adapter = adapter
+        requestWeather()
     }
 
-    private fun updateProgress(total: Int = -1, checked: Int = -1) {
-        val t: Int
-        val c: Int
-
-        if (total == -1) {
-            val cats = adapter.getCategories()
-            t = cats.sumOf { it.items.size }
-            c = cats.sumOf { cat -> cat.items.count { it.isChecked } }
+    private fun requestWeather() {
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
+            == PackageManager.PERMISSION_GRANTED) {
+            fetchWeather()
         } else {
-            t = total
-            c = checked
+            ActivityCompat.requestPermissions(
+                this,
+                arrayOf(Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION),
+                LOCATION_PERMISSION_REQUEST
+            )
         }
-
-        binding.progressBar.max = t
-        binding.progressBar.progress = c
-        binding.tvProgress.text = "$c van $t punten gecontroleerd"
-
-        val percentage = if (t > 0) (c * 100 / t) else 0
-        binding.tvPercentage.text = "$percentage%"
-
-        // Change percentage color based on completion
-        val color = when {
-            percentage == 100 -> getColor(R.color.progressComplete)
-            percentage >= 50  -> getColor(R.color.progressPartial)
-            else              -> getColor(R.color.progressLow)
-        }
-        binding.tvPercentage.setTextColor(color)
     }
 
-    private fun updateLastCheckDate() {
-        binding.tvLastCheck.text = "Laatste controle: ${prefsHelper.getLastCheckDate()}"
-    }
+    private fun fetchWeather() {
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
+            != PackageManager.PERMISSION_GRANTED) return
 
-    override fun onCreateOptionsMenu(menu: Menu): Boolean {
-        menuInflater.inflate(R.menu.main_menu, menu)
-        return true
-    }
-
-    override fun onOptionsItemSelected(item: MenuItem): Boolean = when (item.itemId) {
-        R.id.action_reset -> {
-            showResetDialog()
-            true
-        }
-        else -> super.onOptionsItemSelected(item)
-    }
-
-    private fun showResetDialog() {
-        AlertDialog.Builder(this)
-            .setTitle("Checklist resetten")
-            .setMessage("Weet je zeker dat je alle vinkjes wilt verwijderen?")
-            .setPositiveButton("Reset") { _, _ ->
-                prefsHelper.clearSaved()
-                setupRecyclerView()
-                updateProgress()
-                updateLastCheckDate()
+        LocationServices.getFusedLocationProviderClient(this)
+            .lastLocation.addOnSuccessListener { location ->
+                if (location != null) {
+                    CoroutineScope(Dispatchers.Main).launch {
+                        binding.tvWeather.text =
+                            WeatherHelper.fetchWeather(location.latitude, location.longitude)
+                    }
+                } else {
+                    binding.tvWeather.text = "Locatie niet beschikbaar"
+                }
             }
-            .setNegativeButton("Annuleren", null)
-            .show()
+    }
+
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        if (requestCode == LOCATION_PERMISSION_REQUEST
+            && grantResults.isNotEmpty()
+            && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+            fetchWeather()
+        } else {
+            binding.tvWeather.text = "Locatietoestemming geweigerd — geen weerinfo"
+        }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
+            == PackageManager.PERMISSION_GRANTED) {
+            fetchWeather()
+        }
     }
 }

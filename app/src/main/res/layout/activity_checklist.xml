@@ -16,8 +16,53 @@
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
-            app:title="@string/main_title"
-            app:titleTextColor="@android:color/white" />
+            app:titleTextColor="@android:color/white"
+            app:navigationIconTint="@android:color/white"
+            tools:title="Ultimate" />
+
+        <!-- Voortgangsbalk -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingHorizontal="16dp"
+            android:paddingBottom="12dp">
+
+            <com.google.android.material.progressindicator.LinearProgressIndicator
+                android:id="@+id/progressBar"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:trackCornerRadius="4dp"
+                app:indicatorColor="@android:color/white"
+                app:trackColor="#44FFFFFF" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:paddingTop="4dp">
+
+                <TextView
+                    android:id="@+id/tvProgress"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:textColor="@android:color/white"
+                    android:textSize="13sp"
+                    tools:text="0 / 10 klaar" />
+
+                <TextView
+                    android:id="@+id/tvPercentage"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@android:color/white"
+                    android:textSize="13sp"
+                    android:textStyle="bold"
+                    tools:text="0%" />
+
+            </LinearLayout>
+
+        </LinearLayout>
 
     </com.google.android.material.appbar.AppBarLayout>
 
@@ -63,15 +108,14 @@
 
         </com.google.android.material.card.MaterialCardView>
 
-        <!-- Fietsengrid -->
+        <!-- Checklist -->
         <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/rvBikes"
+            android:id="@+id/rvChecklist"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:paddingHorizontal="8dp"
-            android:paddingBottom="16dp"
             android:clipToPadding="false"
-            tools:listitem="@layout/item_bike_card" />
+            android:paddingBottom="24dp"
+            tools:listitem="@layout/item_checklist" />
 
     </LinearLayout>
 

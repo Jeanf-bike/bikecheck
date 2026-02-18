@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">BikeCheck</string>
-    <string name="app_subtitle">Fiets veiligheidscheck</string>
+    <string name="main_title">Mijn Fietsen</string>
     <string name="action_reset">Reset checklist</string>
 </resources>

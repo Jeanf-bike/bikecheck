@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.google.android.material.card.MaterialCardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="6dp"
+    app:cardElevation="4dp"
+    app:cardCornerRadius="12dp"
+    app:rippleColor="#22000000">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <!-- Fiets afbeelding / placeholder -->
+        <View
+            android:id="@+id/ivBikePlaceholder"
+            android:layout_width="match_parent"
+            android:layout_height="130dp" />
+
+        <!-- Fiets naam + type -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="12dp"
+            android:background="@color/cardBackground">
+
+            <TextView
+                android:id="@+id/tvBikeName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="17sp"
+                android:textStyle="bold"
+                android:textColor="@color/textPrimary"
+                tools:text="Ultimate" />
+
+            <TextView
+                android:id="@+id/tvBikeSubtitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="13sp"
+                android:textColor="@color/textSecondary"
+                tools:text="Race fiets" />
+
+            <TextView
+                android:id="@+id/tvBikeSubtype"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="12sp"
+                android:textStyle="italic"
+                android:textColor="@color/colorPrimary"
+                android:visibility="gone"
+                tools:text="Fully" />
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+</com.google.android.material.card.MaterialCardView>

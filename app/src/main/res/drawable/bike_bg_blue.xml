@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Placeholder voor Neuron (MTB fully) - vervang door bike_neuron.jpg -->
+<shape xmlns:android="http://schemas.android.com/apk/res/android">
+    <gradient
+        android:startColor="#0D47A1"
+        android:endColor="#42A5F5"
+        android:angle="135" />
+</shape>
