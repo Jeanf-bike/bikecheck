@@ -417,7 +417,9 @@ function tekenFietsen() {
     const grid = document.getElementById('fiets-grid');
     grid.innerHTML = FIETSEN.map(f => {
         const foto = laadFoto(f.naam);
-        const bg = foto ? `url('${foto}') center/cover` : f.kleur;
+        const bg = foto
+            ? `url('${foto}') center/cover`
+            : `url('images/bike_${f.naam.toLowerCase()}.jpg') center/cover, ${f.kleur}`;
         return `
         <div class="fiets-kaart" data-naam="${f.naam}">
             <div class="fiets-foto-wrap">
