@@ -120,11 +120,26 @@ html, body {
     user-select: none;
 }
 .fiets-kaart:active { transform: scale(.96); }
+.fiets-foto-wrap { position: relative; height: 140px; }
 .fiets-foto {
     height: 140px;
     background-size: cover;
     background-position: center;
 }
+.foto-knop {
+    position: absolute;
+    bottom: 6px; right: 6px;
+    background: rgba(0,0,0,.45);
+    border: none;
+    border-radius: 50%;
+    width: 32px; height: 32px;
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer;
+    font-size: 16px;
+    color: #fff;
+    z-index: 2;
+}
+.foto-knop:active { background: rgba(0,0,0,.7); }
 .fiets-info { padding: 10px 12px 12px; }
 .fiets-naam { font-size: 15px; font-weight: 700; }
 .fiets-rij { display: flex; align-items: center; gap: 6px; margin-top: 3px; }
@@ -375,6 +390,12 @@ function laadOp(naam) {
     try { return JSON.parse(localStorage.getItem('bc_' + naam)) || {}; }
     catch { return {}; }
 }
+function laadFoto(naam) {
+    return localStorage.getItem('bc_foto_' + naam) || '';
+}
+function slaFotoOp(naam, dataUrl) {
+    localStorage.setItem('bc_foto_' + naam, dataUrl);
+}
 
 // ── Navigatie ─────────────────────────────────────────────────────────────────
 function toonHoofd() {
@@ -394,9 +415,15 @@ function toonChecklist(fiets) {
 // ── Fietskaarten tekenen ──────────────────────────────────────────────────────
 function tekenFietsen() {
     const grid = document.getElementById('fiets-grid');
-    grid.innerHTML = FIETSEN.map(f => `
+    grid.innerHTML = FIETSEN.map(f => {
+        const foto = laadFoto(f.naam);
+        const bg = foto ? `url('${foto}') center/cover` : f.kleur;
+        return `
         <div class="fiets-kaart" data-naam="${f.naam}">
-            <div class="fiets-foto" style="background:url('images/bike_${f.naam.toLowerCase()}.jpg') center/cover, ${f.kleur}"></div>
+            <div class="fiets-foto-wrap">
+                <div class="fiets-foto" id="foto-${f.naam}" style="background:${bg}"></div>
+                <button class="foto-knop" data-fiets="${f.naam}" title="Foto wijzigen">📷</button>
+            </div>
             <div class="fiets-info">
                 <div class="fiets-naam">${f.naam}</div>
                 <div class="fiets-rij">
@@ -404,8 +431,42 @@ function tekenFietsen() {
                     ${f.type ? `<span class="fiets-type">${f.type}</span>` : ''}
                 </div>
             </div>
-        </div>
-    `).join('');
+        </div>`;
+    }).join('');
+
+    // Verborgen file input
+    let fileInput = document.getElementById('foto-input');
+    if (!fileInput) {
+        fileInput = document.createElement('input');
+        fileInput.type = 'file';
+        fileInput.accept = 'image/*';
+        fileInput.id = 'foto-input';
+        fileInput.style.display = 'none';
+        document.body.appendChild(fileInput);
+    }
+
+    let actieveFiets = null;
+    grid.querySelectorAll('.foto-knop').forEach(knop => {
+        knop.addEventListener('click', e => {
+            e.stopPropagation();
+            actieveFiets = knop.dataset.fiets;
+            fileInput.value = '';
+            fileInput.click();
+        });
+    });
+
+    fileInput.onchange = () => {
+        const bestand = fileInput.files[0];
+        if (!bestand || !actieveFiets) return;
+        const reader = new FileReader();
+        reader.onload = ev => {
+            slaFotoOp(actieveFiets, ev.target.result);
+            const fotoEl = document.getElementById('foto-' + actieveFiets);
+            if (fotoEl) fotoEl.style.background = `url('${ev.target.result}') center/cover`;
+        };
+        reader.readAsDataURL(bestand);
+    };
+
     grid.querySelectorAll('.fiets-kaart').forEach(k => {
         k.addEventListener('click', () => {
             const f = FIETSEN.find(f => f.naam === k.dataset.naam);
