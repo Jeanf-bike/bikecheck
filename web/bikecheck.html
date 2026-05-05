@@ -6,49 +6,30 @@
 <title>BikeCheck</title>
 <style>
 :root {
-    --ruimte:  #08061A;
-    --cosmos:  #120E30;
-    --nebula:  #1A1240;
-    --oranje:  #E8622A;
-    --goud:    #F0B429;
-    --ster:    #EDE8C5;
-    --teal:    #00D4B8;
-    --dim:     rgba(240,180,41,.12);
-    --lijn:    rgba(232,98,42,.35);
+    --bg:    #EDEAE4;
+    --card:  #FFFFFF;
+    --hal:   #CC1400;
+    --hal-d: #A01000;
+    --tekst: #1A1917;
+    --sub:   #7A7672;
+    --lijn:  #D4D0CA;
+    --balk:  #F6F4F0;
 }
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 html, body {
     height: 100%;
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-    background: var(--ruimte);
-    color: var(--ster);
+    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    background: var(--bg);
+    color: var(--tekst);
     -webkit-tap-highlight-color: transparent;
     overscroll-behavior: none;
 }
 .verborgen { display: none !important; }
 
-/* ── Sterrenhemel canvas ── */
-#sterren {
-    position: fixed;
-    inset: 0;
-    z-index: 0;
-    pointer-events: none;
-}
-
-/* ── Scherm wrapper (boven canvas) ── */
-#hoofd-scherm, #check-scherm {
-    position: relative;
-    z-index: 1;
-    min-height: 100dvh;
-    display: flex;
-    flex-direction: column;
-}
-
 /* ── App-balk ── */
 .balk {
-    background: rgba(8,6,26,.88);
-    border-bottom: 1.5px solid var(--oranje);
-    color: var(--ster);
+    background: var(--balk);
+    border-bottom: 2px solid var(--hal);
     padding: 0 16px;
     display: flex;
     align-items: center;
@@ -57,60 +38,66 @@ html, body {
     top: 0;
     z-index: 10;
     flex-wrap: wrap;
-    backdrop-filter: blur(8px);
-    -webkit-backdrop-filter: blur(8px);
+}
+.hal-oog {
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    flex-shrink: 0;
+    margin-right: 12px;
+    background: radial-gradient(circle at 38% 32%, #FF5533, #CC1400 52%, #6B0600);
+    box-shadow: 0 0 7px rgba(204,20,0,.55), inset 0 1px 2px rgba(255,120,90,.25);
 }
 .balk-titel {
-    font-size: 14px;
+    font-size: 11px;
     font-weight: 700;
     flex: 1;
-    letter-spacing: 4px;
+    letter-spacing: 6px;
     text-transform: uppercase;
-    color: var(--goud);
+    color: var(--tekst);
     line-height: 56px;
 }
 .icoon-knop {
     background: none;
     border: none;
-    color: var(--ster);
+    color: var(--sub);
     cursor: pointer;
     padding: 8px;
     border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
+    font-size: 20px;
     line-height: 56px;
-    font-size: 22px;
     transition: color .15s;
 }
-.icoon-knop:active { color: var(--oranje); }
+.icoon-knop:active { color: var(--hal); }
 
-/* Voortgang */
+/* ── Voortgang ── */
 .voortgang-wrap { width: 100%; padding: 0 0 10px; }
 .voortgang-balk {
-    height: 4px;
-    background: rgba(255,255,255,.1);
-    border-radius: 2px;
+    height: 2px;
+    background: var(--lijn);
     overflow: hidden;
 }
 .voortgang-fill {
     height: 100%;
-    background: linear-gradient(90deg, var(--oranje), var(--goud));
-    border-radius: 2px;
+    background: var(--hal);
     transition: width .35s ease;
     width: 0%;
 }
 .voortgang-labels {
     display: flex;
     justify-content: space-between;
-    font-size: 11px;
+    font-size: 10px;
     font-family: 'Courier New', monospace;
-    color: rgba(240,180,41,.7);
+    letter-spacing: 2px;
+    color: var(--sub);
     margin-top: 5px;
-    letter-spacing: 1px;
+    text-transform: uppercase;
 }
 
-/* ── Scherm-inhoud ── */
+/* ── Inhoud ── */
 .inhoud {
     padding: 12px;
     display: flex;
@@ -121,34 +108,23 @@ html, body {
 
 /* ── Weerkaart ── */
 .weerkaart {
-    background: rgba(18,14,48,.82);
+    background: var(--card);
     border: 1px solid var(--lijn);
-    border-radius: 6px;
+    border-left: 3px solid var(--hal);
     padding: 12px 16px;
     display: flex;
     align-items: flex-start;
-    gap: 12px;
-    position: relative;
-    backdrop-filter: blur(6px);
+    gap: 14px;
 }
-.weerkaart::before,
-.weerkaart::after {
-    content: '◈';
-    position: absolute;
-    font-size: 10px;
-    color: var(--oranje);
-    opacity: .6;
-}
-.weerkaart::before { top: 5px; left: 8px; }
-.weerkaart::after  { bottom: 5px; right: 8px; }
-.weer-emoji { font-size: 24px; flex-shrink: 0; line-height: 1.2; }
+.weer-emoji { font-size: 20px; flex-shrink: 0; line-height: 1.5; }
 .weer-tekst {
-    font-size: 13px;
-    line-height: 1.65;
+    font-size: 12px;
+    line-height: 1.9;
     white-space: pre-line;
     font-family: 'Courier New', monospace;
-    color: var(--ster);
-    letter-spacing: .3px;
+    letter-spacing: .8px;
+    text-transform: uppercase;
+    color: var(--tekst);
 }
 
 /* ── Fietskaarten ── */
@@ -158,79 +134,96 @@ html, body {
     gap: 10px;
 }
 .fiets-kaart {
-    border-radius: 12px;
+    background: var(--card);
     overflow: hidden;
-    border: 1px solid rgba(232,98,42,.25);
+    border: 1px solid var(--lijn);
     cursor: pointer;
-    transition: transform .15s, box-shadow .15s;
+    transition: border-color .15s, transform .12s;
     user-select: none;
-    background: var(--nebula);
 }
 .fiets-kaart:active {
-    transform: scale(.96);
-    box-shadow: 0 0 18px rgba(232,98,42,.3);
+    transform: scale(.97);
+    border-color: var(--hal);
 }
-.fiets-foto-wrap { position: relative; height: 210px; overflow: hidden; }
+.fiets-foto-wrap {
+    position: relative;
+    height: 170px;
+    background: #F8F6F2;
+    border-bottom: 1px solid var(--lijn);
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
 .fiets-foto {
-    height: 210px;
-    background-size: cover;
+    width: 100%;
+    height: 100%;
+    background-size: contain;
     background-position: center;
+    background-repeat: no-repeat;
     transition: transform .3s ease;
 }
-.fiets-kaart:active .fiets-foto { transform: scale(1.04); }
-
-/* donkere gradient overlay over de foto */
-.fiets-foto-wrap::after {
-    content: '';
+.fiets-kaart:active .fiets-foto { transform: scale(1.06); }
+.hal-dot {
     position: absolute;
-    inset: 0;
-    background: linear-gradient(to bottom, rgba(8,6,26,.05) 0%, rgba(8,6,26,.72) 100%);
-    pointer-events: none;
+    top: 8px; left: 8px;
+    width: 9px; height: 9px;
+    border-radius: 50%;
+    background: radial-gradient(circle at 35% 30%, #FF5533, #CC1400 55%, #6B0600);
+    box-shadow: 0 0 4px rgba(204,20,0,.55);
 }
 .foto-knop {
     position: absolute;
     bottom: 8px; right: 8px;
-    background: rgba(8,6,26,.65);
-    border: 1px solid rgba(232,98,42,.5);
+    background: rgba(255,255,255,.92);
+    border: 1px solid var(--lijn);
     border-radius: 50%;
-    width: 32px; height: 32px;
+    width: 30px; height: 30px;
     display: flex; align-items: center; justify-content: center;
     cursor: pointer;
-    font-size: 15px;
+    font-size: 14px;
     z-index: 3;
+    transition: border-color .15s;
 }
-.foto-knop:active { background: rgba(232,98,42,.4); }
-.fiets-naam-overlay {
-    position: absolute;
-    bottom: 10px; left: 12px;
-    z-index: 3;
-    font-size: 13px;
-    font-weight: 900;
+.foto-knop:active { border-color: var(--hal); }
+.geen-foto-tekst {
+    font-size: 10px;
     letter-spacing: 3px;
     text-transform: uppercase;
-    color: var(--goud);
-    text-shadow: 0 1px 8px rgba(0,0,0,.8);
+    color: var(--lijn);
+    pointer-events: none;
 }
 .fiets-info {
-    padding: 8px 12px 10px;
+    padding: 9px 12px 11px;
+}
+.fiets-naam {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 5px;
+    text-transform: uppercase;
+    color: var(--tekst);
+}
+.fiets-rij {
     display: flex;
     align-items: center;
     gap: 6px;
+    margin-top: 4px;
 }
 .fiets-sub {
-    font-size: 11px;
-    color: rgba(237,232,197,.55);
+    font-size: 9px;
+    color: var(--sub);
     flex: 1;
-    letter-spacing: .5px;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
 }
 .fiets-type {
-    font-size: 10px;
+    font-size: 8px;
     font-weight: 700;
-    color: var(--teal);
-    border: 1px solid rgba(0,212,184,.4);
-    padding: 2px 7px;
-    border-radius: 20px;
-    letter-spacing: .5px;
+    color: var(--hal);
+    border: 1px solid rgba(204,20,0,.3);
+    padding: 2px 6px;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
 }
 
 /* ── Checklijst ── */
@@ -238,17 +231,13 @@ html, body {
     list-style: none;
     display: flex;
     flex-direction: column;
-    gap: 5px;
     padding-bottom: 32px;
 }
 .check-item {
-    background: rgba(18,14,48,.75);
-    border-left: 3px solid var(--oranje);
-    border-radius: 0 6px 6px 0;
-    overflow: hidden;
-    transition: background .15s;
+    background: var(--card);
+    border-bottom: 1px solid var(--lijn);
 }
-.check-item:active { background: rgba(26,18,64,.9); }
+.check-item:first-child { border-top: 1px solid var(--lijn); }
 .check-item label {
     display: flex;
     align-items: center;
@@ -270,87 +259,90 @@ html, body {
     position: absolute;
     top: 50%; left: 50%;
     transform: translate(-50%, -50%);
-    width: 20px; height: 20px;
-    border: 2px solid rgba(232,98,42,.5);
+    width: 18px; height: 18px;
+    border: 1.5px solid var(--lijn);
     border-radius: 50%;
     background: transparent;
     transition: all .15s;
 }
 .check-item input[type=checkbox]:checked::after {
-    background: var(--oranje);
-    border-color: var(--oranje);
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='3.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='20 6 9 17 4 12'/%3E%3C/svg%3E");
+    background: var(--hal);
+    border-color: var(--hal);
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='3.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='20 6 9 17 4 12'/%3E%3C/svg%3E");
     background-repeat: no-repeat;
     background-position: center;
-    box-shadow: 0 0 8px rgba(232,98,42,.6);
+    box-shadow: 0 0 6px rgba(204,20,0,.4);
 }
 .item-inhoud { flex: 1; display: flex; flex-direction: column; gap: 4px; padding: 10px 0; }
-.item-tekst { font-size: 14px; line-height: 1.3; color: var(--ster); transition: opacity .15s; }
+.item-tekst { font-size: 14px; line-height: 1.3; color: var(--tekst); transition: opacity .15s; }
 .item-badge {
     display: inline-block;
-    font-size: 10px;
+    font-size: 9px;
     font-weight: 700;
-    padding: 2px 8px;
-    border-radius: 20px;
+    padding: 2px 7px;
     align-self: flex-start;
-    letter-spacing: .5px;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
 }
-.badge-uv   { background: rgba(240,180,41,.15); color: var(--goud); border: 1px solid rgba(240,180,41,.3); }
-.badge-koud { background: rgba(0,212,184,.12);  color: var(--teal); border: 1px solid rgba(0,212,184,.3); }
-.check-item.afgevinkt { border-left-color: rgba(232,98,42,.25); }
-.check-item.afgevinkt .item-tekst { text-decoration: line-through; opacity: .3; }
+.badge-uv   { background: rgba(204,20,0,.07); color: var(--hal); border: 1px solid rgba(204,20,0,.2); }
+.badge-koud { background: rgba(0,70,180,.06); color: #0046B4; border: 1px solid rgba(0,70,180,.2); }
+.check-item.afgevinkt .item-tekst { text-decoration: line-through; opacity: .28; }
 
-/* ── Reset-dialoog ── */
+/* ── Dialoog ── */
 .overlay {
     position: fixed; inset: 0;
-    background: rgba(8,6,26,.75);
+    background: rgba(238,234,228,.82);
     display: flex; align-items: center; justify-content: center;
     z-index: 100; padding: 24px;
-    backdrop-filter: blur(4px);
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
 }
 .dialoog {
-    background: var(--cosmos);
-    border: 1px solid var(--oranje);
-    border-radius: 10px;
+    background: var(--card);
+    border: 1px solid var(--lijn);
+    border-top: 3px solid var(--hal);
     padding: 24px;
     max-width: 300px;
     width: 100%;
-    box-shadow: 0 0 40px rgba(232,98,42,.25);
-    position: relative;
+    box-shadow: 0 4px 24px rgba(0,0,0,.10);
 }
-.dialoog::before { content: '◈'; position: absolute; top: 8px; left: 12px; color: var(--oranje); font-size: 10px; opacity: .7; }
-.dialoog::after  { content: '◈'; position: absolute; bottom: 8px; right: 12px; color: var(--oranje); font-size: 10px; opacity: .7; }
-.dialoog h2 { font-size: 15px; letter-spacing: 2px; text-transform: uppercase; color: var(--goud); margin-bottom: 10px; }
-.dialoog p  { font-size: 13px; color: rgba(237,232,197,.65); margin-bottom: 22px; line-height: 1.6; }
+.dialoog h2 {
+    font-size: 10px;
+    letter-spacing: 5px;
+    text-transform: uppercase;
+    color: var(--tekst);
+    margin-bottom: 12px;
+}
+.dialoog p { font-size: 13px; color: var(--sub); margin-bottom: 22px; line-height: 1.6; }
 .dialoog-knoppen { display: flex; gap: 10px; justify-content: flex-end; }
 .knop {
     padding: 9px 18px;
-    border: none;
-    border-radius: 6px;
-    font-size: 13px;
-    font-weight: 600;
-    letter-spacing: 1px;
+    border: 1px solid var(--lijn);
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 2.5px;
     text-transform: uppercase;
     cursor: pointer;
-    transition: opacity .15s;
+    transition: all .15s;
+    background: transparent;
 }
-.knop:active { opacity: .7; }
-.knop-annuleer { background: rgba(237,232,197,.1); color: var(--ster); border: 1px solid rgba(237,232,197,.2); }
-.knop-reset    { background: var(--oranje); color: #fff; }
+.knop-annuleer { color: var(--sub); }
+.knop-annuleer:active { background: var(--lijn); }
+.knop-reset    { background: var(--hal); color: #fff; border-color: var(--hal); }
+.knop-reset:active { background: var(--hal-d); }
 </style>
 </head>
 <body>
 
-<canvas id="sterren"></canvas>
-
 <!-- ═══ HOOFDSCHERM ═══ -->
 <div id="hoofd-scherm">
     <header class="balk">
+        <div class="hal-oog"></div>
         <span class="balk-titel">Mijn Fietsen</span>
     </header>
     <div class="inhoud">
         <div class="weerkaart">
-            <span class="weer-emoji">🌌</span>
+            <span class="weer-emoji">⊙</span>
             <span class="weer-tekst" id="weer-hoofd">Locatie ophalen…</span>
         </div>
         <div class="fiets-grid" id="fiets-grid"></div>
@@ -361,7 +353,7 @@ html, body {
 <div id="check-scherm" class="verborgen">
     <header class="balk">
         <button class="icoon-knop" id="terug-knop">&#8592;</button>
-        <span class="balk-titel" id="check-titel">Ultimate</span>
+        <span class="balk-titel" id="check-titel">—</span>
         <button class="icoon-knop" id="reset-knop" title="Reset">&#8635;</button>
         <div class="voortgang-wrap">
             <div class="voortgang-balk">
@@ -375,7 +367,7 @@ html, body {
     </header>
     <div class="inhoud">
         <div class="weerkaart">
-            <span class="weer-emoji">🌌</span>
+            <span class="weer-emoji">⊙</span>
             <span class="weer-tekst" id="weer-check">Locatie ophalen…</span>
         </div>
         <ul class="checklijst" id="check-items"></ul>
@@ -397,75 +389,16 @@ html, body {
 <script>
 'use strict';
 
-// ── Sterren-canvas ────────────────────────────────────────────────────────────
-(function initSterren() {
-    const c = document.getElementById('sterren');
-    const ctx = c.getContext('2d');
-    let sterren = [];
-
-    function maakSterren() {
-        sterren = [];
-        for (let i = 0; i < 200; i++) {
-            sterren.push({
-                x: Math.random(),
-                y: Math.random(),
-                r: Math.random() * 1.4 + 0.2,
-                a: Math.random() * 0.6 + 0.3,
-                knipperSnelheid: Math.random() * 0.008 + 0.002,
-                knipperFase: Math.random() * Math.PI * 2,
-            });
-        }
-    }
-
-    function resize() {
-        c.width  = window.innerWidth;
-        c.height = window.innerHeight;
-    }
-
-    function teken(t) {
-        ctx.clearRect(0, 0, c.width, c.height);
-
-        // Nevel-gloed (twee zachte cirkels)
-        const g1 = ctx.createRadialGradient(c.width*.3, c.height*.25, 0, c.width*.3, c.height*.25, c.width*.45);
-        g1.addColorStop(0, 'rgba(60,20,120,.18)');
-        g1.addColorStop(1, 'rgba(8,6,26,0)');
-        ctx.fillStyle = g1;
-        ctx.fillRect(0, 0, c.width, c.height);
-
-        const g2 = ctx.createRadialGradient(c.width*.75, c.height*.6, 0, c.width*.75, c.height*.6, c.width*.4);
-        g2.addColorStop(0, 'rgba(20,60,100,.14)');
-        g2.addColorStop(1, 'rgba(8,6,26,0)');
-        ctx.fillStyle = g2;
-        ctx.fillRect(0, 0, c.width, c.height);
-
-        sterren.forEach(s => {
-            const alpha = s.a * (0.6 + 0.4 * Math.sin(t * s.knipperSnelheid * 1000 + s.knipperFase));
-            ctx.beginPath();
-            ctx.arc(s.x * c.width, s.y * c.height, s.r, 0, Math.PI * 2);
-            ctx.fillStyle = `rgba(237,232,197,${alpha})`;
-            ctx.fill();
-        });
-        requestAnimationFrame(teken);
-    }
-
-    window.addEventListener('resize', resize);
-    resize();
-    maakSterren();
-    requestAnimationFrame(teken);
-})();
-
-// ── Config ────────────────────────────────────────────────────────────────────
 const API_SLEUTEL = 'b2993d09a467a0172653bfecc4851b74';
 
-// ── Fietsen (kleur = nebula-blend achter foto) ────────────────────────────────
 const FIETSEN = [
-    { naam:'Ultimate', sub:'Race fiets',    type:'',        nebulaKleur:'#1A0A3E' },
-    { naam:'Atalaya',  sub:'Gravel fiets',  type:'',        nebulaKleur:'#1D1040' },
-    { naam:'Neuron',   sub:'Mountain bike', type:'Fully',   nebulaKleur:'#1A1535' },
-    { naam:'Exceed',   sub:'Mountain bike', type:'Hardtail',nebulaKleur:'#0D1830' },
+    { naam:'Ultimate', sub:'Race fiets',    type:''         },
+    { naam:'Atalaya',  sub:'Gravel fiets',  type:''         },
+    { naam:'Neuron',   sub:'Mountain bike', type:'Fully'    },
+    { naam:'Exceed',   sub:'Mountain bike', type:'Hardtail' },
 ];
 
-// ── Checklijsten ──────────────────────────────────────────────────────────────
+// Checklijsten — vinkjes starten altijd UIT bij openen
 const LIJSTEN = {
     Ultimate: [
         { id:'u1',  tekst:'Raceschoenen' },
@@ -519,46 +452,38 @@ const LIJSTEN = {
     ],
 };
 
-// ── Weer-items ─────────────────────────────────────────────────────────────────
 function weerItems(temp, uvi) {
     const items = [];
     if (uvi >= 3) {
-        items.push({ id:'w_zonnebrand', tekst:'Zonnebrand',        badge:'☀ UV',   cls:'badge-uv' });
-        items.push({ id:'w_lipbalsem',  tekst:'Lipbalsem',          badge:'☀ UV',   cls:'badge-uv' });
+        items.push({ id:'w_zonnebrand', tekst:'Zonnebrand',        badge:'UV',   cls:'badge-uv' });
+        items.push({ id:'w_lipbalsem',  tekst:'Lipbalsem',          badge:'UV',   cls:'badge-uv' });
     }
     if (temp < 5) {
-        items.push({ id:'w_muts',       tekst:'Muts',               badge:'❄ Koud', cls:'badge-koud' });
-        items.push({ id:'w_handsch',    tekst:'Warme handschoenen', badge:'❄ Koud', cls:'badge-koud' });
-        items.push({ id:'w_overschoen', tekst:'Overschoenen',       badge:'❄ Koud', cls:'badge-koud' });
+        items.push({ id:'w_muts',       tekst:'Muts',               badge:'Koud', cls:'badge-koud' });
+        items.push({ id:'w_handsch',    tekst:'Warme handschoenen', badge:'Koud', cls:'badge-koud' });
+        items.push({ id:'w_overschoen', tekst:'Overschoenen',       badge:'Koud', cls:'badge-koud' });
     }
     return items;
 }
 
-// ── State ─────────────────────────────────────────────────────────────────────
+// In-memory state per fiets (gereset bij elke pagina-open)
+const sessieState = {};
+
 let huidigeFiets = null;
 let weerTemp = 15;
 let weerUvi  = 0;
 let weerTekst = 'Locatie ophalen…';
 
-// ── Opslag ────────────────────────────────────────────────────────────────────
-function slaOp(naam, items) {
-    const s = {};
-    items.forEach(it => s[it.id] = it.aangevinkt);
-    localStorage.setItem('bc_' + naam, JSON.stringify(s));
-}
-function laadOp(naam) {
-    try { return JSON.parse(localStorage.getItem('bc_' + naam)) || {}; }
-    catch { return {}; }
-}
+// Alleen foto's bewaren tussen sessies
 function laadFoto(naam) { return localStorage.getItem('bc_foto_' + naam) || ''; }
 function slaFotoOp(naam, dataUrl) { localStorage.setItem('bc_foto_' + naam, dataUrl); }
 
-// ── Navigatie ─────────────────────────────────────────────────────────────────
 function toonHoofd() {
     document.getElementById('check-scherm').classList.add('verborgen');
     document.getElementById('hoofd-scherm').classList.remove('verborgen');
     huidigeFiets = null;
 }
+
 function toonChecklist(fiets) {
     huidigeFiets = fiets;
     document.getElementById('hoofd-scherm').classList.add('verborgen');
@@ -568,27 +493,27 @@ function toonChecklist(fiets) {
     tekenChecklist();
 }
 
-// ── Fietskaarten ──────────────────────────────────────────────────────────────
 function tekenFietsen() {
     const grid = document.getElementById('fiets-grid');
     grid.innerHTML = FIETSEN.map(f => {
-        const opgeslagenFoto = laadFoto(f.naam);
-        let fotoStijl;
-        if (opgeslagenFoto) {
-            fotoStijl = `background: url('${opgeslagenFoto}') center/cover; background-color: ${f.nebulaKleur}; background-blend-mode: multiply;`;
-        } else {
-            fotoStijl = `background: url('images/bike_${f.naam.toLowerCase()}.jpg') center/cover ${f.nebulaKleur}; background-blend-mode: multiply;`;
-        }
+        const foto = laadFoto(f.naam);
+        const fotoStijl = foto
+            ? `background-image:url('${foto}'); background-size:contain; background-position:center; background-repeat:no-repeat;`
+            : '';
         return `
         <div class="fiets-kaart" data-naam="${f.naam}">
             <div class="fiets-foto-wrap">
                 <div class="fiets-foto" id="foto-${f.naam}" style="${fotoStijl}"></div>
-                <div class="fiets-naam-overlay">${f.naam}</div>
+                ${!foto ? '<span class="geen-foto-tekst">📷</span>' : ''}
+                <div class="hal-dot"></div>
                 <button class="foto-knop" data-fiets="${f.naam}" title="Foto wijzigen">📷</button>
             </div>
             <div class="fiets-info">
-                <span class="fiets-sub">${f.sub}</span>
-                ${f.type ? `<span class="fiets-type">${f.type}</span>` : ''}
+                <div class="fiets-naam">${f.naam}</div>
+                <div class="fiets-rij">
+                    <span class="fiets-sub">${f.sub}</span>
+                    ${f.type ? `<span class="fiets-type">${f.type}</span>` : ''}
+                </div>
             </div>
         </div>`;
     }).join('');
@@ -616,15 +541,17 @@ function tekenFietsen() {
     fileInput.onchange = () => {
         const bestand = fileInput.files[0];
         if (!bestand || !actieveFiets) return;
-        const fietsData = FIETSEN.find(f => f.naam === actieveFiets);
         const reader = new FileReader();
         reader.onload = ev => {
             slaFotoOp(actieveFiets, ev.target.result);
             const fotoEl = document.getElementById('foto-' + actieveFiets);
             if (fotoEl) {
-                fotoEl.style.background = `url('${ev.target.result}') center/cover`;
-                fotoEl.style.backgroundColor = fietsData ? fietsData.nebulaKleur : '#1A1240';
-                fotoEl.style.backgroundBlendMode = 'multiply';
+                fotoEl.style.backgroundImage  = `url('${ev.target.result}')`;
+                fotoEl.style.backgroundSize   = 'contain';
+                fotoEl.style.backgroundRepeat = 'no-repeat';
+                fotoEl.style.backgroundPosition = 'center';
+                const plaatshouder = fotoEl.parentElement.querySelector('.geen-foto-tekst');
+                if (plaatshouder) plaatshouder.remove();
             }
         };
         reader.readAsDataURL(bestand);
@@ -638,15 +565,20 @@ function tekenFietsen() {
     });
 }
 
-// ── Checklist ─────────────────────────────────────────────────────────────────
 function tekenChecklist() {
     if (!huidigeFiets) return;
-    const opgeslagen = laadOp(huidigeFiets.naam);
-    const basisItems = LIJSTEN[huidigeFiets.naam].map(it => ({
-        ...it, aangevinkt: opgeslagen[it.id] ?? false, badge: '', cls: ''
+    const naam = huidigeFiets.naam;
+
+    // Haal in-memory state op (of maak nieuwe aan — altijd alles UIT)
+    if (!sessieState[naam]) {
+        sessieState[naam] = {};
+    }
+
+    const basisItems = LIJSTEN[naam].map(it => ({
+        ...it, aangevinkt: sessieState[naam][it.id] ?? false, badge:'', cls:''
     }));
     const wItems = weerItems(weerTemp, weerUvi).map(it => ({
-        ...it, aangevinkt: opgeslagen[it.id] ?? false
+        ...it, aangevinkt: sessieState[naam][it.id] ?? false
     }));
     const alleItems = [...basisItems, ...wItems];
 
@@ -668,8 +600,10 @@ function tekenChecklist() {
             const li   = document.getElementById('li-' + cb.dataset.id);
             const item = alleItems.find(it => it.id === cb.dataset.id);
             li.classList.toggle('afgevinkt', cb.checked);
-            if (item) item.aangevinkt = cb.checked;
-            slaOp(huidigeFiets.naam, alleItems);
+            if (item) {
+                item.aangevinkt = cb.checked;
+                sessieState[naam][cb.dataset.id] = cb.checked;
+            }
             bijwerkVoortgang(alleItems);
         });
     });
@@ -685,7 +619,6 @@ function bijwerkVoortgang(items) {
     document.getElementById('voortgang-pct').textContent    = pct + '%';
 }
 
-// ── Weer ──────────────────────────────────────────────────────────────────────
 async function haalWeerOp(lat, lon) {
     try {
         const [fRes, uviRes] = await Promise.allSettled([
@@ -693,24 +626,24 @@ async function haalWeerOp(lat, lon) {
             fetch(`https://api.openweathermap.org/data/2.5/uvi?lat=${lat}&lon=${lon}&appid=${API_SLEUTEL}`).then(r => r.json()),
         ]);
         if (fRes.status !== 'fulfilled') throw new Error();
-        const f    = fRes.value;
-        const nu   = f.list[0];
+        const f     = fRes.value;
+        const nu    = f.list[0];
         const over4 = f.list[1];
-        weerTemp   = nu.main.temp;
-        weerUvi    = uviRes.status === 'fulfilled' ? (uviRes.value?.value ?? 0) : 0;
+        weerTemp    = nu.main.temp;
+        weerUvi     = uviRes.status === 'fulfilled' ? (uviRes.value?.value ?? 0) : 0;
         const temp  = Math.round(weerTemp);
         const temp4 = Math.round(over4.main.temp);
         const regen = Math.round(nu.pop * 100);
         const wid   = nu.weather[0].id;
-        const emoji = wid>=200&&wid<300?'⛈️':wid>=300&&wid<600?'🌧️':wid>=600&&wid<700?'🌨️':wid>=700&&wid<800?'🌫️':wid===800?'☀️':'⛅';
-        weerTekst   = `${emoji}  Nu: ${temp}°C     +4u: ${temp4}°C`;
-        if (regen > 30) weerTekst += `\n⚠  ${regen}% kans op regen`;
+        const emoji = wid>=200&&wid<300?'⛈':wid>=300&&wid<600?'🌧':wid>=600&&wid<700?'🌨':wid>=700&&wid<800?'◎':wid===800?'○':'◑';
+        weerTekst   = `${emoji}  Nu ${temp}°C  /  +4u ${temp4}°C`;
+        if (regen > 30) weerTekst += `\n!  Regen ${regen}%`;
         if (weerUvi >= 3) {
-            const niveau = weerUvi>=8?'ZEER HOOG':weerUvi>=6?'HOOG':'MATIG';
+            const niveau = weerUvi>=8?'zeer hoog':weerUvi>=6?'hoog':'matig';
             weerTekst += `\n◉  UV ${Math.round(weerUvi)} — ${niveau}`;
         }
     } catch {
-        weerTekst = 'Kon het weer niet ophalen';
+        weerTekst = 'Weerbericht niet beschikbaar';
     }
     document.getElementById('weer-hoofd').textContent = weerTekst;
     document.getElementById('weer-check').textContent = weerTekst;
@@ -734,7 +667,6 @@ function startWeer() {
     );
 }
 
-// ── Knoppen ───────────────────────────────────────────────────────────────────
 document.getElementById('terug-knop').addEventListener('click', toonHoofd);
 document.getElementById('reset-knop').addEventListener('click', () => {
     document.getElementById('reset-overlay').classList.remove('verborgen');
@@ -745,7 +677,7 @@ document.getElementById('annuleer-reset').addEventListener('click', () => {
 document.getElementById('bevestig-reset').addEventListener('click', () => {
     document.getElementById('reset-overlay').classList.add('verborgen');
     if (huidigeFiets) {
-        localStorage.removeItem('bc_' + huidigeFiets.naam);
+        sessieState[huidigeFiets.naam] = {};
         tekenChecklist();
     }
 });
@@ -754,7 +686,6 @@ document.getElementById('reset-overlay').addEventListener('click', e => {
         document.getElementById('reset-overlay').classList.add('verborgen');
 });
 
-// ── Start ─────────────────────────────────────────────────────────────────────
 tekenFietsen();
 startWeer();
 setInterval(startWeer, 30 * 60 * 1000);
