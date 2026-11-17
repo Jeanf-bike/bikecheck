@@ -1,23 +1,4 @@
-### Android ###
-*.iml
+build/
+app/build/
 .gradle/
-/local.properties
-/.idea/
-.DS_Store
-/build/
-/captures
-.externalNativeBuild
-.cxx
-*.apk
-*.aab
 local.properties
-
-### Kotlin ###
-*.class
-*.kotlin_module
-
-### Gradle ###
-.gradle
-**/build/
-!src/**/build/
-gradle-wrapper.jar

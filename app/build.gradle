@@ -1,6 +1,5 @@
 plugins {
     id 'com.android.application'
-    id 'org.jetbrains.kotlin.android'
 }
 
 android {
@@ -9,48 +8,31 @@ android {
 
     defaultConfig {
         applicationId "nl.bikecheck"
-        minSdk 24
+        minSdk 26
         targetSdk 34
-        versionCode 2
-        versionName "2.0"
-        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        versionCode 3
+        versionName "3.0"
     }
 
     buildTypes {
         release {
             minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
 
     compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
     }
 
-    kotlinOptions {
-        jvmTarget = '1.8'
-    }
-
-    buildFeatures {
-        viewBinding true
+    // De app toont web/bikecheck.html — altijd de actuele versie meenemen
+    sourceSets {
+        main.assets.srcDirs += "$buildDir/generated/webassets"
     }
 }
 
-dependencies {
-    implementation 'androidx.core:core-ktx:1.12.0'
-    implementation 'androidx.appcompat:appcompat:1.6.1'
-    implementation 'com.google.android.material:material:1.11.0'
-    implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
-    implementation 'com.google.code.gson:gson:2.10.1'
-
-    // Locatie (voor weer)
-    implementation 'com.google.android.gms:play-services-location:21.1.0'
-
-    // Coroutines (async API-calls)
-    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.3'
-
-    testImplementation 'junit:junit:4.13.2'
-    androidTestImplementation 'androidx.test.ext:junit:1.1.5'
-    androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.1'
+tasks.register('kopieerWeb', Copy) {
+    from("$rootDir/web") { include 'bikecheck.html' }
+    into "$buildDir/generated/webassets"
 }
+preBuild.dependsOn kopieerWeb
